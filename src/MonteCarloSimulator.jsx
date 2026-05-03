@@ -136,13 +136,13 @@ const formatBahtFull = (n) => {
 
 export default function MonteCarloSimulator() {
   const [inputs, setInputs] = useState({
-    currentAge: 55,
+    currentAge: 35,
     retirementAge: 60,
     lifeExpectancy: 85,
-    initialCapital: 3000000,
-    annualContribution: 200000,
-    annualWithdrawal: 500000,
-    meanReturn: 0.05,
+    initialCapital: 0,
+    annualContribution: 12000,
+    annualWithdrawal: 600000,
+    meanReturn: 0.10,
     stdDev: 0.10,
     inflationRate: 0.025,
   });
@@ -152,22 +152,23 @@ export default function MonteCarloSimulator() {
   const [numSims, setNumSims] = useState(1000);
 
   const handleInputChange = (field, value) => {
-    setInputs(prev => ({ ...prev, [field]: parseFloat(value) || 0 }));
+    setInputs(prev => ({ ...prev, [field]: value === '' ? '' : (parseFloat(value) || 0) }));
   };
 
   const runSimulation = () => {
     setIsRunning(true);
     // ใช้ setTimeout เพื่อให้ UI update ก่อน
     setTimeout(() => {
+      const n = (v) => parseFloat(v) || 0;
       const params = {
-        initialCapital: inputs.initialCapital,
-        annualContribution: inputs.annualContribution,
-        yearsToRetirement: inputs.retirementAge - inputs.currentAge,
-        yearsInRetirement: inputs.lifeExpectancy - inputs.retirementAge,
-        annualWithdrawal: inputs.annualWithdrawal,
-        meanReturn: inputs.meanReturn,
-        stdDev: inputs.stdDev,
-        inflationRate: inputs.inflationRate,
+        initialCapital: n(inputs.initialCapital),
+        annualContribution: n(inputs.annualContribution),
+        yearsToRetirement: n(inputs.retirementAge) - n(inputs.currentAge),
+        yearsInRetirement: n(inputs.lifeExpectancy) - n(inputs.retirementAge),
+        annualWithdrawal: n(inputs.annualWithdrawal),
+        meanReturn: n(inputs.meanReturn),
+        stdDev: n(inputs.stdDev),
+        inflationRate: n(inputs.inflationRate),
       };
       
       const res = runMonteCarlo(params, numSims);
@@ -249,9 +250,9 @@ export default function MonteCarloSimulator() {
                 สมมติฐานตลาด
               </h2>
               <div className="space-y-4">
-                <InputField label="ผลตอบแทนเฉลี่ย/ปี" value={inputs.meanReturn * 100} onChange={(v) => handleInputChange('meanReturn', v / 100)} suffix="%" step="0.1" />
-                <InputField label="ความผันผวน (SD)" value={inputs.stdDev * 100} onChange={(v) => handleInputChange('stdDev', v / 100)} suffix="%" step="0.1" />
-                <InputField label="เงินเฟ้อ/ปี" value={inputs.inflationRate * 100} onChange={(v) => handleInputChange('inflationRate', v / 100)} suffix="%" step="0.1" />
+                <InputField label="ผลตอบแทนเฉลี่ย/ปี" value={inputs.meanReturn * 100} onChange={(v) => handleInputChange('meanReturn', v === '' ? '' : v / 100)} suffix="%" step="0.1" />
+                <InputField label="ความผันผวน (SD)" value={inputs.stdDev * 100} onChange={(v) => handleInputChange('stdDev', v === '' ? '' : v / 100)} suffix="%" step="0.1" />
+                <InputField label="เงินเฟ้อ/ปี" value={inputs.inflationRate * 100} onChange={(v) => handleInputChange('inflationRate', v === '' ? '' : v / 100)} suffix="%" step="0.1" />
                 <div className="pt-2">
                   <label className="text-xs text-slate-600 mb-1 block">จำนวน simulation</label>
                   <select 
