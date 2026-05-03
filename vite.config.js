@@ -7,4 +7,8 @@ export default defineConfig({
     react({ fastRefresh: false }),
     tailwindcss(),
   ],
+  test: {
+    globals: true,
+    setupFiles: './src/tests/setup.js',
+  },
 })
